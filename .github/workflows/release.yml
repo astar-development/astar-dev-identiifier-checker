@@ -12,7 +12,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # required for GitVersion
+          fetch-depth: 0
 
       - name: Install GitVersion
         uses: GitTools/actions/gitversion/setup@v1
@@ -37,12 +37,6 @@ jobs:
       - name: Publish
         run: dotnet publish AStar.Dev.IdScan/AStar.Dev.IdScan.csproj --configuration Release --output ./publish
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: idscan-${{ steps.gitversion.outputs.semVer }}
-          path: ./publish
-
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -53,13 +47,6 @@ jobs:
             ${{ github.sha }}
 
             Version: **${{ steps.gitversion.outputs.semVer }}**
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload release assets
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v${{ steps.gitversion.outputs.semVer }}
           files: ./publish/**
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
