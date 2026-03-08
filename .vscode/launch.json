@@ -1,0 +1,10 @@
+{
+    "configurations": [
+    {
+        "name": "C#: IdenifierChecker Debug",
+        "type": "dotnet",
+        "request": "launch",
+        "projectPath": "${workspaceFolder}/AStar.Dev.IdScan/AStar.Dev.IdScan.csproj"
+    }
+    ]
+}

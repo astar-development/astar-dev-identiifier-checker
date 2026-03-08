@@ -1,0 +1,101 @@
+using System.Text;
+
+namespace AStar.Dev.IdScan.CLI;
+
+public static class CommandLineParser
+{
+    public static CommandLineOptions Parse(string[] args)
+    {
+        var options = new CommandLineOptions();
+
+        for (int i = 0; i < args.Length; i++)
+        {
+            var arg = args[i];
+
+            // --help
+            if (arg == "--help" || arg == "-h")
+            {
+                options.ShowHelp = true;
+                return options;
+            }
+
+            // --option=value
+            if (arg.StartsWith("--") && arg.Contains('='))
+            {
+                var parts = arg.Split('=', 2);
+                SetOption(options, parts[0], parts[1]);
+                continue;
+            }
+
+            // --option value
+            if (arg.StartsWith("--"))
+            {
+                var name = arg;
+                string? value = null;
+
+                // If next arg exists and is not another flag, treat as value
+                if (i + 1 < args.Length && !args[i + 1].StartsWith("--"))
+                {
+                    value = args[i + 1];
+                    i++;
+                }
+
+                SetOption(options, name, value);
+                continue;
+            }
+        }
+
+        return options;
+    }
+
+    private static void SetOption(CommandLineOptions opts, string name, string? value)
+    {
+        switch (name)
+        {
+            case "--csharp":
+                opts.CSharpPath = value;
+                break;
+
+            case "--typescript":
+                opts.TypeScriptPath = value;
+                break;
+
+            case "--out-csharp":
+                if (!string.IsNullOrWhiteSpace(value))
+                    opts.OutCSharp = value;
+                break;
+
+            case "--out-typescript":
+                if (!string.IsNullOrWhiteSpace(value))
+                    opts.OutTypeScript = value;
+                break;
+
+            case "--report":
+                if (!string.IsNullOrWhiteSpace(value))
+                    opts.Report = value;
+                break;
+
+            default:
+                Console.WriteLine($"Unknown option: {name}");
+                break;
+        }
+    }
+
+    public static void PrintHelp()
+    {
+        var sb = new StringBuilder();
+
+        sb.AppendLine("Usage:");
+        sb.AppendLine("  idscan --csharp <path> [--out-csharp file] [--report file]");
+        sb.AppendLine();
+        sb.AppendLine("Options:");
+        sb.AppendLine("  --csharp <path>           Path to C# source root");
+        sb.AppendLine("  --typescript <path>       Path to TS/JS source root (future)");
+        sb.AppendLine("  --out-csharp <file>       Output registry file (default: identifier-registry.csharp.json)");
+        sb.AppendLine("  --out-typescript <file>   Output TS registry file (default: identifier-registry.typescript.json)");
+        sb.AppendLine("  --report <file>           Output Markdown report (default: identifier-report.md)");
+        sb.AppendLine("  --help                    Show this help");
+
+        Console.WriteLine(sb.ToString());
+    }
+}
