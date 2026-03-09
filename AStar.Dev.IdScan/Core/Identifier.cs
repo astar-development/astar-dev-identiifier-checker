@@ -48,5 +48,4 @@ public class Identifier
     public bool IsUsedInCondition { get; set; }
     public bool IsUsedInLoop { get; set; }
     public bool IsDisposed { get; set; }
-
 }

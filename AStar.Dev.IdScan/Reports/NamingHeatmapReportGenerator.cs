@@ -13,8 +13,8 @@ public static class NamingHeatmapReportGenerator
         sb.AppendLine("This heatmap shows naming quality across files, classes, and namespaces.");
         sb.AppendLine();
 
-        double globalDebt = metrics.Sum(m => m.SeveritySum);
-        double globalAvg = metrics.Average(m => m.Average);
+        var globalDebt = metrics.Sum(m => m.SeveritySum);
+        var globalAvg = metrics.Average(m => m.Average);
 
         sb.AppendLine("## 📊 Global Naming Health");
         sb.AppendLine($"- **Total Naming Debt:** {globalDebt:F2}");
@@ -27,7 +27,7 @@ public static class NamingHeatmapReportGenerator
         sb.AppendLine("| File | Class | Namespace | Avg Severity | Heat |");
         sb.AppendLine("|------|--------|-----------|--------------|-------|");
 
-        foreach (var m in metrics.OrderByDescending(m => m.Average))
+        foreach(NamingMetrics m in metrics.OrderByDescending(m => m.Average))
         {
             sb.AppendLine(
                 $"| `{m.File}` | `{m.Class}` | `{m.Namespace}` | {m.Average:F2} | {NamingHeatmapEngine.HeatLevel(m.Average)} |"

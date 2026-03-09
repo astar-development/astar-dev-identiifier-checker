@@ -1,5 +1,3 @@
-using System.Text.RegularExpressions;
-
 namespace AStar.Dev.IdScan.Core;
 
 public static class SimilarityEngine
@@ -8,46 +6,42 @@ public static class SimilarityEngine
     {
         var results = new List<IdentifierSimilarity>();
 
-        foreach (var other in all)
+        foreach(Identifier other in all)
         {
-            if (other == target)
+            if(other == target)
                 continue;
 
             double score = 0;
 
             // 1. Same type
-            if (other.Type == target.Type)
+            if(other.Type == target.Type)
                 score += 0.4;
 
             // 2. Same lifecycle patterns
-            if ((other.LastWrite != null) == (target.LastWrite != null))
+            if(other.LastWrite != null == (target.LastWrite != null))
                 score += 0.2;
 
-            if (other.IsUsedInCondition == target.IsUsedInCondition)
+            if(other.IsUsedInCondition == target.IsUsedInCondition)
                 score += 0.1;
 
-            if (other.IsUsedInLoop == target.IsUsedInLoop)
+            if(other.IsUsedInLoop == target.IsUsedInLoop)
                 score += 0.1;
 
-            if (other.EscapesMethod == target.EscapesMethod)
+            if(other.EscapesMethod == target.EscapesMethod)
                 score += 0.1;
 
             // 3. Same context
-            if (other.DeclaringNamespace == target.DeclaringNamespace)
+            if(other.DeclaringNamespace == target.DeclaringNamespace)
                 score += 0.1;
 
-            if (score > 0)
-            {
-                results.Add(new IdentifierSimilarity
-                {
-                    Other = other,
-                    Score = score
-                });
-            }
+            if(score > 0) results.Add(new IdentifierSimilarity { Other = other, Score = score });
         }
 
-        return [.. results
-            .OrderByDescending(r => r.Score)
-            .Take(5)];
+        return
+        [
+            .. results
+                .OrderByDescending(r => r.Score)
+                .Take(5)
+        ];
     }
 }

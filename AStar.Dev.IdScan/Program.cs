@@ -9,9 +9,9 @@ public class Program
 {
     public static int Main(string[] args)
     {
-        var options = CommandLineParser.Parse(args);
+        CommandLineOptions options = CommandLineParser.Parse(args);
 
-        if (options.ShowHelp)
+        if(options.ShowHelp)
         {
             CommandLineParser.PrintHelp();
             return 0;
@@ -20,12 +20,10 @@ public class Program
         var identifiers = new List<Identifier>();
 
         // C# scanning
-        if (!string.IsNullOrWhiteSpace(options.CSharpPath))
+        if(!string.IsNullOrWhiteSpace(options.CSharpPath))
         {
-            if (!Directory.Exists(options.CSharpPath))
-            {
+            if(!Directory.Exists(options.CSharpPath))
                 Console.WriteLine($"❌ C# path does not exist: {options.CSharpPath}");
-            }
             else
             {
                 Console.WriteLine($"🔍 Scanning C# source: {options.CSharpPath}");
@@ -35,10 +33,8 @@ public class Program
         }
 
         // TS scanning (future)
-        if (!string.IsNullOrWhiteSpace(options.TypeScriptPath))
-        {
+        if(!string.IsNullOrWhiteSpace(options.TypeScriptPath))
             Console.WriteLine("⚠ TypeScript scanning not implemented yet.");
-        }
 
         // Load registry
         var registry = IdentifierRegistry.Load(options.OutCSharp);
@@ -83,15 +79,16 @@ public class Program
 
         Console.WriteLine("🚨 Generated top naming offenders report: naming-top-offenders.md");
 
-        var clusters = NamingClusterEngine.BuildClusters(identifiers);
-        var inconsistencies = NamingClusterAnalyzer.FindInconsistencies(clusters);
+        List<NamingCluster> clusters = NamingClusterEngine.BuildClusters(identifiers);
+        List<(NamingCluster Cluster, List<Identifier> Outliers)> inconsistencies =
+            NamingClusterAnalyzer.FindInconsistencies(clusters);
 
         var clusterReport = NamingClusterReportGenerator.Generate(clusters, inconsistencies);
         File.WriteAllText("naming-clusters.md", clusterReport);
 
         Console.WriteLine("🧩 Generated naming clusters report: naming-clusters.md");
-        
-        var metrics = NamingMetricsEngine.Compute(severityResults);
+
+        List<NamingMetrics> metrics = NamingMetricsEngine.Compute(severityResults);
         var heatmap = NamingHeatmapReportGenerator.Generate(metrics);
         File.WriteAllText("naming-heatmap.md", heatmap);
 

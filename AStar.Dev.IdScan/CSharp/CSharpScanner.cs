@@ -1,7 +1,7 @@
+using AStar.Dev.IdScan.Core;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using AStar.Dev.IdScan.Core;
 
 namespace AStar.Dev.IdScan.CSharp;
 
@@ -23,15 +23,15 @@ public class CSharpScanner
         references.AddRange(ReferenceLoader.LoadLocalDlls(rootPath));
 
         var compilation = CSharpCompilation.Create(
-                assemblyName: "IdScan",
-                syntaxTrees: syntaxTrees,
-                references: references,
-                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
-            );
+            "IdScan",
+            syntaxTrees,
+            references,
+            new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
+        );
 
-        foreach (var tree in syntaxTrees)
+        foreach(SyntaxTree tree in syntaxTrees)
         {
-            var model = compilation.GetSemanticModel(tree, ignoreAccessibility: true);
+            SemanticModel model = compilation.GetSemanticModel(tree, true);
             var walker = new IdentifierWalker(model, identifiers);
             walker.Visit(tree.GetRoot());
         }
@@ -43,11 +43,18 @@ public class CSharpScanner
     {
         private readonly SemanticModel _model;
         private readonly List<Identifier> _output;
-        private INamedTypeSymbol? _currentType;
         private IMethodSymbol? _currentMethod;
+        private INamedTypeSymbol? _currentType;
+
+        public IdentifierWalker(SemanticModel model, List<Identifier> output)
+        {
+            _model = model;
+            _output = output;
+        }
+
         public override void VisitClassDeclaration(ClassDeclarationSyntax node)
         {
-            var symbol = _model.GetDeclaredSymbol(node);
+            INamedTypeSymbol? symbol = _model.GetDeclaredSymbol(node);
             _currentType = symbol;
 
             base.VisitClassDeclaration(node);
@@ -57,7 +64,7 @@ public class CSharpScanner
 
         public override void VisitStructDeclaration(StructDeclarationSyntax node)
         {
-            var symbol = _model.GetDeclaredSymbol(node);
+            INamedTypeSymbol? symbol = _model.GetDeclaredSymbol(node);
             _currentType = symbol;
 
             base.VisitStructDeclaration(node);
@@ -67,7 +74,7 @@ public class CSharpScanner
 
         public override void VisitRecordDeclaration(RecordDeclarationSyntax node)
         {
-            var symbol = _model.GetDeclaredSymbol(node);
+            INamedTypeSymbol? symbol = _model.GetDeclaredSymbol(node);
             _currentType = symbol;
 
             base.VisitRecordDeclaration(node);
@@ -77,7 +84,7 @@ public class CSharpScanner
 
         public override void VisitMethodDeclaration(MethodDeclarationSyntax node)
         {
-            var symbol = _model.GetDeclaredSymbol(node);
+            IMethodSymbol? symbol = _model.GetDeclaredSymbol(node);
             _currentMethod = symbol;
 
             base.VisitMethodDeclaration(node);
@@ -88,11 +95,11 @@ public class CSharpScanner
         public override void VisitConstructorDeclaration(ConstructorDeclarationSyntax node)
         {
             // Track constructor as current method context
-            var symbol = _model.GetDeclaredSymbol(node);
+            IMethodSymbol? symbol = _model.GetDeclaredSymbol(node);
             _currentMethod = symbol;
 
             // Capture constructor parameters as identifiers
-            foreach (var p in node.ParameterList.Parameters)
+            foreach(ParameterSyntax p in node.ParameterList.Parameters)
                 Add(p.Identifier.Text, p, IdentifierCategory.ConstructorParameter);
 
             base.VisitConstructorDeclaration(node);
@@ -103,18 +110,12 @@ public class CSharpScanner
 
         public override void VisitOperatorDeclaration(OperatorDeclarationSyntax node)
         {
-            var symbol = _model.GetDeclaredSymbol(node);
+            IMethodSymbol? symbol = _model.GetDeclaredSymbol(node);
             _currentMethod = symbol;
 
             base.VisitOperatorDeclaration(node);
 
             _currentMethod = null;
-        }
-
-        public IdentifierWalker(SemanticModel model, List<Identifier> output)
-        {
-            _model = model;
-            _output = output;
         }
 
         public override void VisitParameter(ParameterSyntax node)
@@ -137,7 +138,7 @@ public class CSharpScanner
 
         public override void VisitFieldDeclaration(FieldDeclarationSyntax node)
         {
-            foreach (var v in node.Declaration.Variables)
+            foreach(VariableDeclaratorSyntax v in node.Declaration.Variables)
                 Add(v.Identifier.Text, v, IdentifierCategory.Field);
 
             base.VisitFieldDeclaration(node);
@@ -145,14 +146,12 @@ public class CSharpScanner
 
         public override void VisitDeclarationExpression(DeclarationExpressionSyntax node)
         {
-            if (node.Designation is ParenthesizedVariableDesignationSyntax tuple)
+            if(node.Designation is ParenthesizedVariableDesignationSyntax tuple)
             {
-                foreach (var variable in tuple.Variables)
+                foreach(VariableDesignationSyntax variable in tuple.Variables)
                 {
-                    if (variable is SingleVariableDesignationSyntax single)
-                    {
+                    if(variable is SingleVariableDesignationSyntax single)
                         Add(single.Identifier.Text, single, IdentifierCategory.TupleElement);
-                    }
                 }
             }
 
@@ -167,7 +166,7 @@ public class CSharpScanner
 
         public override void VisitParenthesizedLambdaExpression(ParenthesizedLambdaExpressionSyntax node)
         {
-            foreach (var p in node.ParameterList.Parameters)
+            foreach(ParameterSyntax p in node.ParameterList.Parameters)
                 Add(p.Identifier.Text, p, IdentifierCategory.Parameter);
 
             base.VisitParenthesizedLambdaExpression(node);
@@ -181,25 +180,23 @@ public class CSharpScanner
 
         public override void VisitSwitchExpressionArm(SwitchExpressionArmSyntax node)
         {
-            if (node.Pattern is DeclarationPatternSyntax dp &&
-                dp.Designation is SingleVariableDesignationSyntax sv)
-            {
+            if(node.Pattern is DeclarationPatternSyntax dp &&
+               dp.Designation is SingleVariableDesignationSyntax sv)
                 Add(sv.Identifier.Text, sv, IdentifierCategory.LocalVariable);
-            }
 
             base.VisitSwitchExpressionArm(node);
         }
 
         private void Add(string name, SyntaxNode node, IdentifierCategory category)
         {
-            var symbol = _model.GetDeclaredSymbol(node);
-            var typeInfo = _model.GetTypeInfo(node);
-            var typeSymbol = typeInfo.Type ?? typeInfo.ConvertedType;
+            ISymbol? symbol = _model.GetDeclaredSymbol(node);
+            TypeInfo typeInfo = _model.GetTypeInfo(node);
+            ITypeSymbol? typeSymbol = typeInfo.Type ?? typeInfo.ConvertedType;
 
             var typeName = typeSymbol?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
-                        ?? "unknown";
+                           ?? "unknown";
 
-            var location = node.GetLocation().GetLineSpan();
+            FileLinePositionSpan location = node.GetLocation().GetLineSpan();
             var file = location.Path;
             var line = location.StartLinePosition.Line + 1;
 
@@ -232,16 +229,17 @@ public class CSharpScanner
                 DeclaringType = _currentType?.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat),
                 DeclaringNamespace = _currentType?.ContainingNamespace?.ToDisplayString(),
                 DeclaringBaseType = _currentType?.BaseType?.ToDisplayString(),
-                DeclaringInterfaces = _currentType?.Interfaces.Select(i => i.ToDisplayString()).ToList() ?? new(),
+                DeclaringInterfaces =
+                    _currentType?.Interfaces.Select(i => i.ToDisplayString()).ToList() ?? new List<string>(),
                 DeclaringTypeIsRecord = _currentType?.IsRecord ?? false,
                 DeclaringTypeIsStatic = _currentType?.IsStatic ?? false,
                 DeclaringTypeIsAbstract = _currentType?.IsAbstract ?? false,
                 DeclaringTypeIsSealed = _currentType?.IsSealed ?? false,
                 DeclaringTypeIsPartial = _currentType?.DeclaringSyntaxReferences
-                    .Select(r => r.GetSyntax())
-                    .OfType<TypeDeclarationSyntax>()
-                    .Any(t => t.Modifiers.Any(m => m.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.PartialKeyword)))
-                    ?? false
+                                             .Select(r => r.GetSyntax())
+                                             .OfType<TypeDeclarationSyntax>()
+                                             .Any(t => t.Modifiers.Any(m => m.IsKind(SyntaxKind.PartialKeyword)))
+                                         ?? false
             };
 
             _output.Add(id);
@@ -250,10 +248,10 @@ public class CSharpScanner
 
     private class UsageWalker : CSharpSyntaxWalker
     {
-        private readonly SemanticModel _model;
         private readonly List<Identifier> _identifiers;
-        private INamedTypeSymbol? _currentType;
+        private readonly SemanticModel _model;
         private IMethodSymbol? _currentMethod;
+        private INamedTypeSymbol? _currentType;
 
         public UsageWalker(SemanticModel model, List<Identifier> identifiers)
         {
@@ -277,17 +275,17 @@ public class CSharpScanner
 
         public override void VisitIdentifierName(IdentifierNameSyntax node)
         {
-            var symbol = _model.GetSymbolInfo(node).Symbol;
+            ISymbol? symbol = _model.GetSymbolInfo(node).Symbol;
 
-            if (symbol != null)
+            if(symbol != null)
             {
-                var match = _identifiers.FirstOrDefault(id =>
+                Identifier? match = _identifiers.FirstOrDefault(id =>
                     id.Name == symbol.Name &&
                     id.ContainingType == symbol.ContainingType?.ToDisplayString());
 
-                if (match != null)
+                if(match != null)
                 {
-                    var location = node.GetLocation().GetLineSpan();
+                    FileLinePositionSpan location = node.GetLocation().GetLineSpan();
                     var file = location.Path;
                     var line = location.StartLinePosition.Line + 1;
 
@@ -312,60 +310,60 @@ public class CSharpScanner
         private void UpdateLifecycle(Identifier id, IdentifierUsage usage)
         {
             // First usage
-            if (id.FirstUsage == null)
+            if(id.FirstUsage == null)
                 id.FirstUsage = usage;
 
             // Last usage
             id.LastUsage = usage;
 
             // Writes
-            if (usage.UsageKind == "Write")
+            if(usage.UsageKind == "Write")
             {
-                if (id.FirstWrite == null)
+                if(id.FirstWrite == null)
                     id.FirstWrite = usage;
 
                 id.LastWrite = usage;
             }
 
             // Escapes method (passed as argument)
-            if (usage.UsageKind == "Argument")
+            if(usage.UsageKind == "Argument")
                 id.IsPassedAsArgument = true;
 
             // Returned
-            if (usage.ContainingMethod != null &&
-                usage.ContainingMethod.Contains("return"))
+            if(usage.ContainingMethod != null &&
+               usage.ContainingMethod.Contains("return"))
                 id.IsReturned = true;
 
             // Captured by lambda
-            if (usage.ContainingMethod != null &&
-                usage.ContainingMethod.Contains("=>"))
+            if(usage.ContainingMethod != null &&
+               usage.ContainingMethod.Contains("=>"))
                 id.IsCapturedByLambda = true;
 
             // Stored in field
-            if (usage.UsageKind == "Write" &&
-                usage.ContainingType != id.DeclaringType)
+            if(usage.UsageKind == "Write" &&
+               usage.ContainingType != id.DeclaringType)
                 id.IsStoredInField = true;
 
             // Used in condition
-            if (usage.UsageKind == "Read" &&
-                usage.ContainingMethod?.Contains("if") == true)
+            if(usage.UsageKind == "Read" &&
+               usage.ContainingMethod?.Contains("if") == true)
                 id.IsUsedInCondition = true;
 
             // Used in loop
-            if (usage.ContainingMethod?.Contains("for") == true ||
-                usage.ContainingMethod?.Contains("foreach") == true ||
-                usage.ContainingMethod?.Contains("while") == true)
+            if(usage.ContainingMethod?.Contains("for") == true ||
+               usage.ContainingMethod?.Contains("foreach") == true ||
+               usage.ContainingMethod?.Contains("while") == true)
                 id.IsUsedInLoop = true;
 
             // Disposed
-            if (usage.UsageKind == "Invoke" &&
-                usage.ContainingMethod?.Contains("Dispose") == true)
+            if(usage.UsageKind == "Invoke" &&
+               usage.ContainingMethod?.Contains("Dispose") == true)
                 id.IsDisposed = true;
         }
 
         private string InferUsageKind(IdentifierNameSyntax node)
         {
-            var parent = node.Parent;
+            SyntaxNode? parent = node.Parent;
 
             return parent switch
             {

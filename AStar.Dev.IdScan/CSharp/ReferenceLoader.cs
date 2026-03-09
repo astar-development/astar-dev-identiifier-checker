@@ -1,5 +1,5 @@
-using Microsoft.CodeAnalysis;
 using System.Reflection;
+using Microsoft.CodeAnalysis;
 
 namespace AStar.Dev.IdScan.CSharp;
 
@@ -7,15 +7,15 @@ public static class ReferenceLoader
 {
     public static IEnumerable<MetadataReference> LoadFrameworkReferences()
     {
-        var assemblies = new[]
+        Assembly[] assemblies = new[]
         {
-            typeof(object).Assembly,                     // System.Private.CoreLib
-            typeof(Console).Assembly,                    // System.Console
-            typeof(Enumerable).Assembly,                 // System.Linq
-            typeof(List<>).Assembly,                     // System.Collections
-            typeof(Task).Assembly,                       // System.Threading.Tasks
-            typeof(Uri).Assembly,                        // System.Runtime
-            typeof(IAsyncEnumerable<>).Assembly          // System.Runtime.Extensions
+            typeof(object).Assembly, // System.Private.CoreLib
+            typeof(Console).Assembly, // System.Console
+            typeof(Enumerable).Assembly, // System.Linq
+            typeof(List<>).Assembly, // System.Collections
+            typeof(Task).Assembly, // System.Threading.Tasks
+            typeof(Uri).Assembly, // System.Runtime
+            typeof(IAsyncEnumerable<>).Assembly // System.Runtime.Extensions
         };
 
         return assemblies
@@ -27,7 +27,7 @@ public static class ReferenceLoader
     {
         var dlls = Directory.GetFiles(rootPath, "*.dll", SearchOption.AllDirectories);
 
-        foreach (var dll in dlls)
+        foreach(var dll in dlls)
         {
             MetadataReference? reference = null;
 
@@ -40,7 +40,7 @@ public static class ReferenceLoader
                 // ignore native DLLs
             }
 
-            if (reference != null)
+            if(reference != null)
                 yield return reference;
         }
     }

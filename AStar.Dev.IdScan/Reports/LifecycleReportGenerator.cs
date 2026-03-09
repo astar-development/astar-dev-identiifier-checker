@@ -12,7 +12,7 @@ public static class LifecycleReportGenerator
         sb.AppendLine("# Identifier Lifecycle Summary");
         sb.AppendLine();
 
-        foreach (var id in identifiers.OrderBy(i => i.File).ThenBy(i => i.Line))
+        foreach(Identifier id in identifiers.OrderBy(i => i.File).ThenBy(i => i.Line))
         {
             sb.AppendLine($"## `{id.Name}` ({id.Category})");
             sb.AppendLine();
@@ -49,17 +49,15 @@ public static class LifecycleReportGenerator
             sb.AppendLine();
 
             // Usage table
-            if (id.Usages.Count > 0)
+            if(id.Usages.Count > 0)
             {
                 sb.AppendLine("### Usage Timeline");
                 sb.AppendLine();
                 sb.AppendLine("| File | Line | Method | Usage |");
                 sb.AppendLine("|------|------|--------|--------|");
 
-                foreach (var u in id.Usages.OrderBy(u => u.File).ThenBy(u => u.Line))
-                {
+                foreach(IdentifierUsage u in id.Usages.OrderBy(u => u.File).ThenBy(u => u.Line))
                     sb.AppendLine($"| `{u.File}` | {u.Line} | `{u.ContainingMethod}` | {u.UsageKind} |");
-                }
 
                 sb.AppendLine();
             }
@@ -80,7 +78,7 @@ public static class LifecycleReportGenerator
 
     private static string FormatUsage(IdentifierUsage? usage)
     {
-        if (usage == null)
+        if(usage == null)
             return "_none_";
 
         return $"`{usage.File}` line {usage.Line} ({usage.UsageKind})";
