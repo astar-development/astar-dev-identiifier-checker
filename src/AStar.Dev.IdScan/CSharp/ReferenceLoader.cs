@@ -35,10 +35,10 @@ public static class ReferenceLoader
             {
                 reference = MetadataReference.CreateFromFile(dll);
             }
-            catch (BadImageFormatException){}// ignore native DLLs
-            catch (FileNotFoundException){} // ignore DLLs that cannot be found
-            catch (IOException){} // ignore DLLs that cannot be read
-            catch (UnauthorizedAccessException){} // ignore DLLs that cannot be accessed
+            catch(BadImageFormatException) { }// ignore native DLLs
+            catch(FileNotFoundException) { } // ignore DLLs that cannot be found
+            catch(IOException) { } // ignore DLLs that cannot be read
+            catch(UnauthorizedAccessException) { } // ignore DLLs that cannot be accessed
 
             if(reference != null)
                 yield return reference;
