@@ -23,9 +23,7 @@ public class Program
         if(!string.IsNullOrWhiteSpace(options.CSharpPath))
         {
             if(!Directory.Exists(options.CSharpPath))
-            {
                 Console.WriteLine($"❌ C# path does not exist: {options.CSharpPath}");
-            }
             else
             {
                 Console.WriteLine($"🔍 Scanning C# source: {options.CSharpPath}");

@@ -17,7 +17,7 @@ public static class NamingRulesEngine
             result.Violations.Add("Identifier is immutable but name looks like a verb.");
 
         // 3. Escaping identifiers should be descriptive
-        if(id.EscapesMethod && id.Name.Length < 3)
+        if(id is { EscapesMethod: true, Name.Length: < 3 })
             result.Violations.Add("Identifier escapes method but name is too short.");
 
         // 4. Condition identifiers should be boolean-like
