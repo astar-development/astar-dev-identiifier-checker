@@ -40,7 +40,7 @@ jobs:
       - name: Publish
         run: dotnet publish AStar.Dev.IdScan/AStar.Dev.IdScan.csproj --configuration Release --output ./publish
 
-      - name: Delete existing release if present - belt and braces
+      - name: Delete existing release if present
         run: |
           gh release delete v${{ steps.gitversion.outputs.majorMinorPatch }} -y || true
           git tag -d v${{ steps.gitversion.outputs.majorMinorPatch }} || true
@@ -52,14 +52,7 @@ jobs:
         with:
           tag_name: v${{ steps.gitversion.outputs.majorMinorPatch }}
           name: Release v${{ steps.gitversion.outputs.majorMinorPatch }}
-          prerelease: false
-          draft: false
-          fail_on_unmatched_files: false
-          body: |
-            Automated release generated from commit:
-            ${{ github.sha }}
-
-            Version: **${{ steps.gitversion.outputs.majorMinorPatch }}**
           files: ./publish/**
+          fail_on_unmatched_files: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
