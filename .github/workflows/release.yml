@@ -38,7 +38,7 @@ jobs:
         run: dotnet build --configuration Release --no-restore
 
       - name: Publish
-        run: dotnet publish AStar.Dev.IdScan/AStar.Dev.IdScan.csproj --configuration Release --output ./publish
+        run: dotnet publish ./src/AStar.Dev.IdScan/AStar.Dev.IdScan.csproj --configuration Release --output ./publish
 
       # NEW: Zip the publish output to avoid GitHub asset upload failures
       - name: Create release archive
