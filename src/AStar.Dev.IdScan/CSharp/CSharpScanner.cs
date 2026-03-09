@@ -140,10 +140,9 @@ public class CSharpScanner
         {
             if(node.Designation is ParenthesizedVariableDesignationSyntax tuple)
             {
-                foreach(VariableDesignationSyntax variable in tuple.Variables)
+                foreach(SingleVariableDesignationSyntax single in tuple.Variables.OfType<SingleVariableDesignationSyntax>())
                 {
-                    if(variable is SingleVariableDesignationSyntax single)
-                        Add(single.Identifier.Text, single, IdentifierCategory.TupleElement);
+                    Add(single.Identifier.Text, single, IdentifierCategory.TupleElement);
                 }
             }
 

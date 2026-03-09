@@ -94,6 +94,6 @@ public static class CommandLineParser
         _ = sb.AppendLine("  --report <file>           Output Markdown report (default: identifier-report.md)");
         _ = sb.AppendLine("  --help                    Show this help");
 
-        Console.WriteLine(sb.ToString());
+        Console.WriteLine(sb);
     }
 }

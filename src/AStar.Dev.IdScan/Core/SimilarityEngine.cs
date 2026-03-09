@@ -6,11 +6,8 @@ public static class SimilarityEngine
     {
         var results = new List<IdentifierSimilarity>();
 
-        foreach(Identifier other in all)
+        foreach(Identifier other in all.Where(other => other != target))
         {
-            if(other == target)
-                continue;
-
             double score = 0;
 
             // 1. Same type

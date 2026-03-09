@@ -19,11 +19,7 @@ public static class NamingClusterAnalyzer
             if(cluster.Key.StartsWith("TupleElement"))
             {
                 // Tuple elements should be noun-like and descriptive
-                foreach(Identifier id in cluster.Members)
-                {
-                    if(id.Name.Length <= 2)
-                        outliers.Add(id);
-                }
+                outliers.AddRange(cluster.Members.Where(id => id.Name.Length <= 2));
             }
 
             foreach(Identifier id in cluster.Members)
