@@ -18,13 +18,13 @@ jobs:
           fetch-depth: 0
 
       - name: Install GitVersion
-        uses: GitTools/actions/gitversion/setup@v1
+        uses: GitTools/actions/gitversion/setup@v4
         with:
           versionSpec: '5.x'
 
       - name: Determine version
         id: gitversion
-        uses: GitTools/actions/gitversion/execute@v1
+        uses: GitTools/actions/gitversion/execute@v4
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
