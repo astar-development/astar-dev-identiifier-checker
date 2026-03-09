@@ -19,8 +19,8 @@ public static class TopNamingOffendersReportGenerator
             .Take(20) // top 20 offenders
             .ToList();
 
-        double totalDebt = results.Sum(r => r.Severity);
-        double avgDebt = results.Average(r => r.Severity);
+        var totalDebt = results.Sum(r => r.Severity);
+        var avgDebt = results.Average(r => r.Severity);
 
         sb.AppendLine("## 📊 Naming Debt Summary");
         sb.AppendLine($"- **Total Naming Debt:** {totalDebt:F2}");
@@ -31,9 +31,9 @@ public static class TopNamingOffendersReportGenerator
         sb.AppendLine("## 🔥 Worst Offenders");
         sb.AppendLine();
 
-        foreach (var r in sorted)
+        foreach(NamingSeverityResult r in sorted)
         {
-            var id = r.Identifier;
+            Identifier id = r.Identifier;
 
             sb.AppendLine($"### `{id.Name}` — Severity {r.Severity:F2}");
             sb.AppendLine();
@@ -42,7 +42,7 @@ public static class TopNamingOffendersReportGenerator
             sb.AppendLine();
 
             sb.AppendLine("#### Crimes");
-            foreach (var reason in r.Reasons)
+            foreach(var reason in r.Reasons)
                 sb.AppendLine($"- {reason}");
             sb.AppendLine();
 

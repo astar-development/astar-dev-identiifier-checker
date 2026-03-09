@@ -12,9 +12,9 @@ public static class NamingViolationsReportGenerator
         sb.AppendLine("# Naming Violations Report");
         sb.AppendLine();
 
-        foreach (var r in results.Where(r => r.Violations.Any()))
+        foreach(NamingRuleResult r in results.Where(r => r.Violations.Any()))
         {
-            var id = r.Identifier;
+            Identifier id = r.Identifier;
 
             sb.AppendLine($"## `{id.Name}` ({id.Category})");
             sb.AppendLine();
@@ -23,7 +23,7 @@ public static class NamingViolationsReportGenerator
             sb.AppendLine();
 
             sb.AppendLine("### Violations");
-            foreach (var v in r.Violations)
+            foreach(var v in r.Violations)
                 sb.AppendLine($"- {v}");
 
             sb.AppendLine();
@@ -35,7 +35,7 @@ public static class NamingViolationsReportGenerator
             sb.AppendLine();
 
             sb.AppendLine("### Similar Identifiers");
-            foreach (var sim in SimilarityEngine.FindSimilar(id, allIdentifiers))
+            foreach(IdentifierSimilarity sim in SimilarityEngine.FindSimilar(id, allIdentifiers))
                 sb.AppendLine($"- `{sim.Other.Name}` (score {sim.Score:F2})");
 
             sb.AppendLine();

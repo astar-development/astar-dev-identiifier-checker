@@ -16,12 +16,12 @@ public static class NamingMetricsEngine
     {
         var metrics = new Dictionary<string, NamingMetrics>();
 
-        foreach (var r in results)
+        foreach(NamingSeverityResult r in results)
         {
-            var id = r.Identifier;
+            Identifier? id = r.Identifier;
             var key = $"{id.File}|{id.DeclaringNamespace}|{id.DeclaringType}";
 
-            if (!metrics.TryGetValue(key, out var m))
+            if(!metrics.TryGetValue(key, out NamingMetrics? m))
             {
                 m = new NamingMetrics
                 {

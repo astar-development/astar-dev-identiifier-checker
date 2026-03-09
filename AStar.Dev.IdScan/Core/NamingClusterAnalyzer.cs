@@ -7,7 +7,7 @@ public static class NamingClusterAnalyzer
     {
         var results = new List<(NamingCluster, List<Identifier>)>();
 
-        foreach (var cluster in clusters)
+        foreach(NamingCluster cluster in clusters)
         {
             var names = cluster.Members.Select(m => m.Name).ToList();
 
@@ -16,26 +16,26 @@ public static class NamingClusterAnalyzer
             var dominantSuffix = MostCommonSuffix(names);
 
             var outliers = new List<Identifier>();
-            if (cluster.Key.StartsWith("TupleElement"))
+            if(cluster.Key.StartsWith("TupleElement"))
             {
                 // Tuple elements should be noun-like and descriptive
-                foreach (var id in cluster.Members)
+                foreach(Identifier id in cluster.Members)
                 {
-                    if (id.Name.Length <= 2)
+                    if(id.Name.Length <= 2)
                         outliers.Add(id);
                 }
             }
 
-            foreach (var id in cluster.Members)
+            foreach(Identifier id in cluster.Members)
             {
-                bool prefixMismatch = dominantPrefix.Length > 0 && !id.Name.StartsWith(dominantPrefix);
-                bool suffixMismatch = dominantSuffix.Length > 0 && !id.Name.EndsWith(dominantSuffix);
+                var prefixMismatch = dominantPrefix.Length > 0 && !id.Name.StartsWith(dominantPrefix);
+                var suffixMismatch = dominantSuffix.Length > 0 && !id.Name.EndsWith(dominantSuffix);
 
-                if (prefixMismatch || suffixMismatch)
+                if(prefixMismatch || suffixMismatch)
                     outliers.Add(id);
             }
 
-            if (outliers.Count > 0)
+            if(outliers.Count > 0)
                 results.Add((cluster, outliers));
         }
 

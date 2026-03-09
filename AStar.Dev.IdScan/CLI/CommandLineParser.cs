@@ -8,19 +8,19 @@ public static class CommandLineParser
     {
         var options = new CommandLineOptions();
 
-        for (int i = 0; i < args.Length; i++)
+        for(var i = 0; i < args.Length; i++)
         {
             var arg = args[i];
 
             // --help
-            if (arg == "--help" || arg == "-h")
+            if(arg is "--help" or "-h")
             {
                 options.ShowHelp = true;
                 return options;
             }
 
             // --option=value
-            if (arg.StartsWith("--") && arg.Contains('='))
+            if(arg.StartsWith("--") && arg.Contains('='))
             {
                 var parts = arg.Split('=', 2);
                 SetOption(options, parts[0], parts[1]);
@@ -28,21 +28,17 @@ public static class CommandLineParser
             }
 
             // --option value
-            if (arg.StartsWith("--"))
+            if(!arg.StartsWith("--")) continue;
+            string? value = null;
+
+            // If next arg exists and is not another flag, treat as value
+            if(i + 1 < args.Length && !args[i + 1].StartsWith("--"))
             {
-                var name = arg;
-                string? value = null;
-
-                // If next arg exists and is not another flag, treat as value
-                if (i + 1 < args.Length && !args[i + 1].StartsWith("--"))
-                {
-                    value = args[i + 1];
-                    i++;
-                }
-
-                SetOption(options, name, value);
-                continue;
+                value = args[i + 1];
+                i++;
             }
+
+            SetOption(options, arg, value);
         }
 
         return options;
@@ -50,7 +46,7 @@ public static class CommandLineParser
 
     private static void SetOption(CommandLineOptions opts, string name, string? value)
     {
-        switch (name)
+        switch(name)
         {
             case "--csharp":
                 opts.CSharpPath = value;
@@ -61,17 +57,17 @@ public static class CommandLineParser
                 break;
 
             case "--out-csharp":
-                if (!string.IsNullOrWhiteSpace(value))
+                if(!string.IsNullOrWhiteSpace(value))
                     opts.OutCSharp = value;
                 break;
 
             case "--out-typescript":
-                if (!string.IsNullOrWhiteSpace(value))
+                if(!string.IsNullOrWhiteSpace(value))
                     opts.OutTypeScript = value;
                 break;
 
             case "--report":
-                if (!string.IsNullOrWhiteSpace(value))
+                if(!string.IsNullOrWhiteSpace(value))
                     opts.Report = value;
                 break;
 
@@ -92,7 +88,8 @@ public static class CommandLineParser
         sb.AppendLine("  --csharp <path>           Path to C# source root");
         sb.AppendLine("  --typescript <path>       Path to TS/JS source root (future)");
         sb.AppendLine("  --out-csharp <file>       Output registry file (default: identifier-registry.csharp.json)");
-        sb.AppendLine("  --out-typescript <file>   Output TS registry file (default: identifier-registry.typescript.json)");
+        sb.AppendLine(
+            "  --out-typescript <file>   Output TS registry file (default: identifier-registry.typescript.json)");
         sb.AppendLine("  --report <file>           Output Markdown report (default: identifier-report.md)");
         sb.AppendLine("  --help                    Show this help");
 

@@ -8,11 +8,11 @@ public static class NamingClusterEngine
     {
         var clusters = new Dictionary<string, NamingCluster>();
 
-        foreach (var id in identifiers)
+        foreach(Identifier id in identifiers)
         {
             var key = ComputeClusterKey(id);
 
-            if (!clusters.TryGetValue(key, out var cluster))
+            if(!clusters.TryGetValue(key, out NamingCluster? cluster))
             {
                 cluster = new NamingCluster { Key = key };
                 clusters[key] = cluster;
@@ -42,23 +42,20 @@ public static class NamingClusterEngine
         var prefix = ExtractPrefix(id.Name);
         var suffix = ExtractSuffix(id.Name);
 
-        if (id.Category == IdentifierCategory.TupleElement)
-        {
-            return $"TupleElement|{id.DeclaringMethod}|{id.DeclaringType}";
-        }
-
-        return $"{typeKey}|{lifecycleKey}|{prefix}|{suffix}";
+        return id.Category == IdentifierCategory.TupleElement
+            ? $"TupleElement|{id.DeclaringMethod}|{id.DeclaringType}"
+            : $"{typeKey}|{lifecycleKey}|{prefix}|{suffix}";
     }
 
     private static string ExtractPrefix(string name)
     {
-        var match = Regex.Match(name, @"^(is|has|should|get|set|load|update|create|fetch)");
+        Match match = Regex.Match(name, @"^(is|has|should|get|set|load|update|create|fetch)");
         return match.Success ? match.Value : "";
     }
 
     private static string ExtractSuffix(string name)
     {
-        var match = Regex.Match(name, @"(Id|Dto|List|Collection|Manager|Service)$");
+        Match match = Regex.Match(name, @"(Id|Dto|List|Collection|Manager|Service)$");
         return match.Success ? match.Value : "";
     }
 }

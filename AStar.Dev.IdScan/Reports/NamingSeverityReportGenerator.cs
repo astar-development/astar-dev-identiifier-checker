@@ -12,9 +12,9 @@ public static class NamingSeverityReportGenerator
         sb.AppendLine("# Naming Severity Report");
         sb.AppendLine();
 
-        foreach (var r in results.OrderByDescending(r => r.Severity))
+        foreach(NamingSeverityResult r in results.OrderByDescending(r => r.Severity))
         {
-            var id = r.Identifier;
+            Identifier id = r.Identifier;
 
             sb.AppendLine($"## `{id.Name}` — Severity {r.Severity:F2}");
             sb.AppendLine();
@@ -23,7 +23,7 @@ public static class NamingSeverityReportGenerator
             sb.AppendLine();
 
             sb.AppendLine("### Reasons");
-            foreach (var reason in r.Reasons)
+            foreach(var reason in r.Reasons)
                 sb.AppendLine($"- {reason}");
 
             sb.AppendLine();

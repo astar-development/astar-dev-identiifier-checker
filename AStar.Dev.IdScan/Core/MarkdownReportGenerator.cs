@@ -11,7 +11,7 @@ public class MarkdownReportGenerator
         sb.AppendLine("| Name | Type | Category | File | First Seen | Status | Notes |");
         sb.AppendLine("|------|------|----------|------|------------|--------|--------|");
 
-        foreach (var id in registry.Identifiers.OrderBy(i => i.Name))
+        foreach(IdentifierRegistryEntry id in registry.Identifiers.OrderBy(i => i.Name))
         {
             var notes = id.Similarity.Any()
                 ? string.Join(", ", id.Similarity.Select(s => $"{s.Other} ({s.Score:F2})"))

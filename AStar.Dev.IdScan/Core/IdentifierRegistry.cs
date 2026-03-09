@@ -8,7 +8,7 @@ public class IdentifierRegistry
 
     public static IdentifierRegistry Load(string path)
     {
-        if (!File.Exists(path))
+        if(!File.Exists(path))
             return new IdentifierRegistry();
 
         var json = File.ReadAllText(path);
@@ -18,10 +18,7 @@ public class IdentifierRegistry
 
     public void Save(string path)
     {
-        var json = JsonSerializer.Serialize(this, new JsonSerializerOptions
-        {
-            WriteIndented = true
-        });
+        var json = JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true });
 
         File.WriteAllText(path, json);
     }
