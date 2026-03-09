@@ -40,11 +40,21 @@ jobs:
       - name: Publish
         run: dotnet publish AStar.Dev.IdScan/AStar.Dev.IdScan.csproj --configuration Release --output ./publish
 
+      - name: Delete existing release if present - belt and braces
+        run: |
+          gh release delete v${{ steps.gitversion.outputs.majorMinorPatch }} -y || true
+          git tag -d v${{ steps.gitversion.outputs.majorMinorPatch }} || true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.gitversion.outputs.majorMinorPatch }}
           name: Release v${{ steps.gitversion.outputs.majorMinorPatch }}
+          prerelease: false
+          draft: false
+          fail_on_unmatched_files: false
           body: |
             Automated release generated from commit:
             ${{ github.sha }}
