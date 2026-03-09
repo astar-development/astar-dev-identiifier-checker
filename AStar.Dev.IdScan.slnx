@@ -1,3 +1,6 @@
 <Solution>
-    <Project Path="AStar.Dev.IdScan/AStar.Dev.IdScan.csproj"/>
+    <Folder Name="/tests/">
+        <Project Path="tests/AStar.Dev.IdScan.Tests.Unit/AStar.Dev.IdScan.Tests.Unit.csproj" />
+    </Folder>
+    <Project Path="src/AStar.Dev.IdScan/AStar.Dev.IdScan.csproj" />
 </Solution>
