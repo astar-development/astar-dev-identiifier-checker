@@ -40,6 +40,13 @@ jobs:
       - name: Publish
         run: dotnet publish AStar.Dev.IdScan/AStar.Dev.IdScan.csproj --configuration Release --output ./publish
 
+      # NEW: Zip the publish output to avoid GitHub asset upload failures
+      - name: Create release archive
+        run: |
+          cd publish
+          zip -r ../idscan-${{ steps.gitversion.outputs.majorMinorPatch }}.zip .
+
+      # NEW: Delete stale release/tag if they exist (prevents update-a-release-asset errors)
       - name: Delete existing release if present
         run: |
           gh release delete v${{ steps.gitversion.outputs.majorMinorPatch }} -y || true
@@ -52,7 +59,7 @@ jobs:
         with:
           tag_name: v${{ steps.gitversion.outputs.majorMinorPatch }}
           name: Release v${{ steps.gitversion.outputs.majorMinorPatch }}
-          files: ./publish/**
+          files: idscan-${{ steps.gitversion.outputs.majorMinorPatch }}.zip
           fail_on_unmatched_files: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
