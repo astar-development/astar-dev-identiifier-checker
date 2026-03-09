@@ -27,7 +27,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        lib: ${{ fromJson('["' + join(needs.discover-libs.outputs.libs, '","') + '"]') }}
+        lib: ${{ fromJson(format('["{0}"]', join(needs.discover-libs.outputs.libs, '","'))) }}
 
     steps:
       - uses: actions/checkout@v6
