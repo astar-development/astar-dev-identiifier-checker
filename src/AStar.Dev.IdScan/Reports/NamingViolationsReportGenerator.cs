@@ -9,40 +9,40 @@ public static class NamingViolationsReportGenerator
     {
         var sb = new StringBuilder();
 
-        sb.AppendLine("# Naming Violations Report");
-        sb.AppendLine();
+        _ = sb.AppendLine("# Naming Violations Report");
+        _ = sb.AppendLine();
 
         foreach(NamingRuleResult r in results.Where(r => r.Violations.Any()))
         {
             Identifier id = r.Identifier;
 
-            sb.AppendLine($"## `{id.Name}` ({id.Category})");
-            sb.AppendLine();
-            sb.AppendLine($"Declared in `{id.File}` line {id.Line}");
-            sb.AppendLine($"Type: `{id.Type}`");
-            sb.AppendLine();
+            _ = sb.AppendLine($"## `{id.Name}` ({id.Category})");
+            _ = sb.AppendLine();
+            _ = sb.AppendLine($"Declared in `{id.File}` line {id.Line}");
+            _ = sb.AppendLine($"Type: `{id.Type}`");
+            _ = sb.AppendLine();
 
-            sb.AppendLine("### Violations");
+            _ = sb.AppendLine("### Violations");
             foreach(var v in r.Violations)
-                sb.AppendLine($"- {v}");
+                _ = sb.AppendLine($"- {v}");
 
-            sb.AppendLine();
-            sb.AppendLine("---");
-            sb.AppendLine();
+            _ = sb.AppendLine();
+            _ = sb.AppendLine("---");
+            _ = sb.AppendLine();
 
-            sb.AppendLine("### Suggested Name");
-            sb.AppendLine($"`{NamingSuggestionEngine.Suggest(id)}`");
-            sb.AppendLine();
+            _ = sb.AppendLine("### Suggested Name");
+            _ = sb.AppendLine($"`{NamingSuggestionEngine.Suggest(id)}`");
+            _ = sb.AppendLine();
 
-            sb.AppendLine("### Similar Identifiers");
+            _ = sb.AppendLine("### Similar Identifiers");
             foreach(IdentifierSimilarity sim in SimilarityEngine.FindSimilar(id, allIdentifiers))
-                sb.AppendLine($"- `{sim.Other.Name}` (score {sim.Score:F2})");
+                _ = sb.AppendLine($"- `{sim.Other.Name}` (score {sim.Score:F2})");
 
-            sb.AppendLine();
+            _ = sb.AppendLine();
 
-            sb.AppendLine("### Recommended Name");
-            sb.AppendLine($"`{NamingRecommendationEngine.Recommend(id, allIdentifiers)}`");
-            sb.AppendLine();
+            _ = sb.AppendLine("### Recommended Name");
+            _ = sb.AppendLine($"`{NamingRecommendationEngine.Recommend(id, allIdentifiers)}`");
+            _ = sb.AppendLine();
         }
 
         return sb.ToString();

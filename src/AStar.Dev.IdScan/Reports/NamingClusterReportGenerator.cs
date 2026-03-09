@@ -10,49 +10,49 @@ public static class NamingClusterReportGenerator
     {
         var sb = new StringBuilder();
 
-        sb.AppendLine("# 🧩 Naming Clusters Report");
-        sb.AppendLine();
-        sb.AppendLine(
+        _ = sb.AppendLine("# 🧩 Naming Clusters Report");
+        _ = sb.AppendLine();
+        _ = sb.AppendLine(
             "This report identifies groups of identifiers that behave similarly but are named inconsistently.");
-        sb.AppendLine();
+        _ = sb.AppendLine();
 
         foreach((NamingCluster cluster, List<Identifier> outliers) in inconsistencies)
         {
-            sb.AppendLine($"## Cluster: `{cluster.Key}`");
-            sb.AppendLine();
+            _ = sb.AppendLine($"## Cluster: `{cluster.Key}`");
+            _ = sb.AppendLine();
 
-            sb.AppendLine("### Members");
+            _ = sb.AppendLine("### Members");
             foreach(Identifier m in cluster.Members)
             {
-                sb.AppendLine($"- `{m.Name}` " +
+                _ = sb.AppendLine($"- `{m.Name}` " +
                               $"(in `{m.File}` line {m.Line}, " +
                               $"class `{m.DeclaringType}`, " +
                               $"method `{m.DeclaringMethod}`)");
             }
 
-            sb.AppendLine();
+            _ = sb.AppendLine();
 
-            sb.AppendLine("### Outliers");
+            _ = sb.AppendLine("### Outliers");
             foreach(Identifier o in outliers)
             {
-                sb.AppendLine($"- `{o.Name}` " +
+                _ = sb.AppendLine($"- `{o.Name}` " +
                               $"(in `{o.File}` line {o.Line}, " +
                               $"class `{o.DeclaringType}`, " +
                               $"method `{o.DeclaringMethod}`)");
             }
 
-            sb.AppendLine();
+            _ = sb.AppendLine();
 
-            sb.AppendLine("### Suggested Fixes");
+            _ = sb.AppendLine("### Suggested Fixes");
             foreach(Identifier o in outliers)
             {
                 var suggestion = NamingRecommendationEngine.Recommend(o, cluster.Members);
-                sb.AppendLine($"- `{o.Name}` → `{suggestion}`");
+                _ = sb.AppendLine($"- `{o.Name}` → `{suggestion}`");
             }
 
-            sb.AppendLine();
-            sb.AppendLine("---");
-            sb.AppendLine();
+            _ = sb.AppendLine();
+            _ = sb.AppendLine("---");
+            _ = sb.AppendLine();
         }
 
         return sb.ToString();

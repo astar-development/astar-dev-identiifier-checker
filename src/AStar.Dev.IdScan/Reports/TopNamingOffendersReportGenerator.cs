@@ -8,10 +8,10 @@ public static class TopNamingOffendersReportGenerator
     {
         var sb = new StringBuilder();
 
-        sb.AppendLine("# 🚨 Top Naming Offenders");
-        sb.AppendLine();
-        sb.AppendLine("This report highlights the most problematic identifiers in the codebase, ranked by severity.");
-        sb.AppendLine();
+        _ = sb.AppendLine("# 🚨 Top Naming Offenders");
+        _ = sb.AppendLine();
+        _ = sb.AppendLine("This report highlights the most problematic identifiers in the codebase, ranked by severity.");
+        _ = sb.AppendLine();
 
         var sorted = results
             .Where(r => r.Severity > 0)
@@ -22,36 +22,36 @@ public static class TopNamingOffendersReportGenerator
         var totalDebt = results.Sum(r => r.Severity);
         var avgDebt = results.Average(r => r.Severity);
 
-        sb.AppendLine("## 📊 Naming Debt Summary");
-        sb.AppendLine($"- **Total Naming Debt:** {totalDebt:F2}");
-        sb.AppendLine($"- **Average Severity:** {avgDebt:F2}");
-        sb.AppendLine($"- **Worst Offender Severity:** {sorted.FirstOrDefault()?.Severity:F2}");
-        sb.AppendLine();
+        _ = sb.AppendLine("## 📊 Naming Debt Summary");
+        _ = sb.AppendLine($"- **Total Naming Debt:** {totalDebt:F2}");
+        _ = sb.AppendLine($"- **Average Severity:** {avgDebt:F2}");
+        _ = sb.AppendLine($"- **Worst Offender Severity:** {sorted.FirstOrDefault()?.Severity:F2}");
+        _ = sb.AppendLine();
 
-        sb.AppendLine("## 🔥 Worst Offenders");
-        sb.AppendLine();
+        _ = sb.AppendLine("## 🔥 Worst Offenders");
+        _ = sb.AppendLine();
 
         foreach(NamingSeverityResult r in sorted)
         {
             Identifier id = r.Identifier;
 
-            sb.AppendLine($"### `{id.Name}` — Severity {r.Severity:F2}");
-            sb.AppendLine();
-            sb.AppendLine($"Declared in `{id.File}` line {id.Line}");
-            sb.AppendLine($"Type: `{id.Type}`");
-            sb.AppendLine();
+            _ = sb.AppendLine($"### `{id.Name}` — Severity {r.Severity:F2}");
+            _ = sb.AppendLine();
+            _ = sb.AppendLine($"Declared in `{id.File}` line {id.Line}");
+            _ = sb.AppendLine($"Type: `{id.Type}`");
+            _ = sb.AppendLine();
 
-            sb.AppendLine("#### Crimes");
+            _ = sb.AppendLine("#### Crimes");
             foreach(var reason in r.Reasons)
-                sb.AppendLine($"- {reason}");
-            sb.AppendLine();
+                _ = sb.AppendLine($"- {reason}");
+            _ = sb.AppendLine();
 
-            sb.AppendLine("#### Recommended Name");
-            sb.AppendLine($"`{NamingRecommendationEngine.Recommend(id, results.Select(x => x.Identifier))}`");
-            sb.AppendLine();
+            _ = sb.AppendLine("#### Recommended Name");
+            _ = sb.AppendLine($"`{NamingRecommendationEngine.Recommend(id, results.Select(x => x.Identifier))}`");
+            _ = sb.AppendLine();
 
-            sb.AppendLine("---");
-            sb.AppendLine();
+            _ = sb.AppendLine("---");
+            _ = sb.AppendLine();
         }
 
         return sb.ToString();

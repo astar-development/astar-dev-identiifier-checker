@@ -31,8 +31,7 @@ public static class NamingRecommendationEngine
 
     private static string Capitalize(string s)
     {
-        if(string.IsNullOrEmpty(s)) return s;
-        return char.ToUpper(s[0]) + s.Substring(1);
+        return string.IsNullOrEmpty(s) ? s : char.ToUpper(s[0]) + s[1..];
     }
 
     private static string ApplyPattern(string name, string pattern)
@@ -43,10 +42,7 @@ public static class NamingRecommendationEngine
         if(pattern == "is{Noun}")
             return "is" + Capitalize(name);
 
-        if(pattern == "{noun}s")
-            return name + "s";
-
-        return name;
+        return pattern == "{noun}s" ? name + "s" : name;
     }
 
     private static string InferClusterName(IEnumerable<IdentifierSimilarity> similar, Identifier id)
@@ -62,23 +58,22 @@ public static class NamingRecommendationEngine
 
         // Try to infer a common suffix
         var suffix = LongestCommonSuffix(names);
-        if(suffix.Length > 1)
-            return id.Name + suffix;
-
-        return id.Name;
+        return suffix.Length > 1 ? id.Name + suffix : id.Name;
     }
 
     private static string LongestCommonPrefix(List<string> names)
     {
-        if(names.Count == 0) return "";
+        if(names.Count == 0)
+            return "";
         var prefix = names[0];
 
         foreach(var name in names)
         {
             while(!name.StartsWith(prefix))
             {
-                prefix = prefix.Substring(0, prefix.Length - 1);
-                if(prefix.Length == 0) return "";
+                prefix = prefix[..^1];
+                if(prefix.Length == 0)
+                    return "";
             }
         }
 
@@ -87,15 +82,17 @@ public static class NamingRecommendationEngine
 
     private static string LongestCommonSuffix(List<string> names)
     {
-        if(names.Count == 0) return "";
+        if(names.Count == 0)
+            return "";
         var suffix = names[0];
 
         foreach(var name in names)
         {
             while(!name.EndsWith(suffix))
             {
-                suffix = suffix.Substring(1);
-                if(suffix.Length == 0) return "";
+                suffix = suffix[1..];
+                if(suffix.Length == 0)
+                    return "";
             }
         }
 

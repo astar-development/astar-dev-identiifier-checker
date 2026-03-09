@@ -28,7 +28,8 @@ public static class CommandLineParser
             }
 
             // --option value
-            if(!arg.StartsWith("--")) continue;
+            if(!arg.StartsWith("--"))
+                continue;
             string? value = null;
 
             // If next arg exists and is not another flag, treat as value
@@ -81,17 +82,17 @@ public static class CommandLineParser
     {
         var sb = new StringBuilder();
 
-        sb.AppendLine("Usage:");
-        sb.AppendLine("  idscan --csharp <path> [--out-csharp file] [--report file]");
-        sb.AppendLine();
-        sb.AppendLine("Options:");
-        sb.AppendLine("  --csharp <path>           Path to C# source root");
-        sb.AppendLine("  --typescript <path>       Path to TS/JS source root (future)");
-        sb.AppendLine("  --out-csharp <file>       Output registry file (default: identifier-registry.csharp.json)");
-        sb.AppendLine(
+        _ = sb.AppendLine("Usage:");
+        _ = sb.AppendLine("  idscan --csharp <path> [--out-csharp file] [--report file]");
+        _ = sb.AppendLine();
+        _ = sb.AppendLine("Options:");
+        _ = sb.AppendLine("  --csharp <path>           Path to C# source root");
+        _ = sb.AppendLine("  --typescript <path>       Path to TS/JS source root (future)");
+        _ = sb.AppendLine("  --out-csharp <file>       Output registry file (default: identifier-registry.csharp.json)");
+        _ = sb.AppendLine(
             "  --out-typescript <file>   Output TS registry file (default: identifier-registry.typescript.json)");
-        sb.AppendLine("  --report <file>           Output Markdown report (default: identifier-report.md)");
-        sb.AppendLine("  --help                    Show this help");
+        _ = sb.AppendLine("  --report <file>           Output Markdown report (default: identifier-report.md)");
+        _ = sb.AppendLine("  --help                    Show this help");
 
         Console.WriteLine(sb.ToString());
     }

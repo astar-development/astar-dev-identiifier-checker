@@ -34,7 +34,8 @@ public static class SimilarityEngine
             if(other.DeclaringNamespace == target.DeclaringNamespace)
                 score += 0.1;
 
-            if(score > 0) results.Add(new IdentifierSimilarity { Other = other, Score = score });
+            if(score > 0)
+                results.Add(new IdentifierSimilarity { Other = other, Score = score });
         }
 
         return

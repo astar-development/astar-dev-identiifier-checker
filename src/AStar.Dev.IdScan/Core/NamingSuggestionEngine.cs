@@ -60,10 +60,7 @@ public static class NamingSuggestionEngine
 
     private static string SuggestPlural(Identifier id)
     {
-        if(id.Name.EndsWith("s"))
-            return id.Name;
-
-        return id.Name + "s";
+        return id.Name.EndsWith("s") ? id.Name : id.Name + "s";
     }
 
     private static string SuggestResource(Identifier id) => id.Name + "Resource";
@@ -74,7 +71,6 @@ public static class NamingSuggestionEngine
 
     private static string Capitalize(string s)
     {
-        if(string.IsNullOrEmpty(s)) return s;
-        return char.ToUpper(s[0]) + s.Substring(1);
+        return string.IsNullOrEmpty(s) ? s : char.ToUpper(s[0]) + s[1..];
     }
 }

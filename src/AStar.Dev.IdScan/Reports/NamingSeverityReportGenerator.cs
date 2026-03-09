@@ -9,31 +9,31 @@ public static class NamingSeverityReportGenerator
     {
         var sb = new StringBuilder();
 
-        sb.AppendLine("# Naming Severity Report");
-        sb.AppendLine();
+        _ = sb.AppendLine("# Naming Severity Report");
+        _ = sb.AppendLine();
 
         foreach(NamingSeverityResult r in results.OrderByDescending(r => r.Severity))
         {
             Identifier id = r.Identifier;
 
-            sb.AppendLine($"## `{id.Name}` — Severity {r.Severity:F2}");
-            sb.AppendLine();
-            sb.AppendLine($"Declared in `{id.File}` line {id.Line}");
-            sb.AppendLine($"Type: `{id.Type}`");
-            sb.AppendLine();
+            _ = sb.AppendLine($"## `{id.Name}` — Severity {r.Severity:F2}");
+            _ = sb.AppendLine();
+            _ = sb.AppendLine($"Declared in `{id.File}` line {id.Line}");
+            _ = sb.AppendLine($"Type: `{id.Type}`");
+            _ = sb.AppendLine();
 
-            sb.AppendLine("### Reasons");
+            _ = sb.AppendLine("### Reasons");
             foreach(var reason in r.Reasons)
-                sb.AppendLine($"- {reason}");
+                _ = sb.AppendLine($"- {reason}");
 
-            sb.AppendLine();
+            _ = sb.AppendLine();
 
-            sb.AppendLine("### Recommended Name");
-            sb.AppendLine($"`{NamingRecommendationEngine.Recommend(id, results.Select(r => r.Identifier))}`");
-            sb.AppendLine();
+            _ = sb.AppendLine("### Recommended Name");
+            _ = sb.AppendLine($"`{NamingRecommendationEngine.Recommend(id, results.Select(r => r.Identifier))}`");
+            _ = sb.AppendLine();
 
-            sb.AppendLine("---");
-            sb.AppendLine();
+            _ = sb.AppendLine("---");
+            _ = sb.AppendLine();
         }
 
         return sb.ToString();

@@ -45,7 +45,7 @@ public static class NamingClusterAnalyzer
     private static string MostCommonPrefix(List<string> names)
     {
         var prefixes = names
-            .Select(n => n.Length > 2 ? n.Substring(0, 2) : "")
+            .Select(n => n.Length > 2 ? n[..2] : "")
             .GroupBy(p => p)
             .OrderByDescending(g => g.Count())
             .First().Key;
@@ -56,7 +56,7 @@ public static class NamingClusterAnalyzer
     private static string MostCommonSuffix(List<string> names)
     {
         var suffixes = names
-            .Select(n => n.Length > 2 ? n.Substring(n.Length - 2) : "")
+            .Select(n => n.Length > 2 ? n[^2..] : "")
             .GroupBy(s => s)
             .OrderByDescending(g => g.Count())
             .First().Key;

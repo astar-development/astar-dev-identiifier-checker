@@ -62,9 +62,6 @@ public static class NamingSeverityEngine
         if(pattern == "is{Noun}")
             return name.StartsWith("is") || name.StartsWith("has");
 
-        if(pattern == "{noun}s")
-            return name.EndsWith("s");
-
-        return false;
+        return pattern == "{noun}s" ? name.EndsWith("s") : false;
     }
 }

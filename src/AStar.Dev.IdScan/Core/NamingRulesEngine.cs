@@ -33,7 +33,8 @@ public static class NamingRulesEngine
             result.Violations.Add("Identifier is disposed but name does not look like a resource.");
 
         // 7. Tuple element naming rules
-        if(id.Category != IdentifierCategory.TupleElement) return result;
+        if(id.Category != IdentifierCategory.TupleElement)
+            return result;
         if(id.Name.Length <= 2)
             result.Violations.Add("Tuple element name is too short.");
 
@@ -43,13 +44,13 @@ public static class NamingRulesEngine
         return result;
     }
 
-    private static bool LooksLikeVerb(string name) =>
+    private static bool LooksLikeVerb(string name)
         // crude but effective: verbs often start with "get", "set", "load", "build", etc.
-        Regex.IsMatch(name, @"^(get|set|load|build|create|update|fetch|calculate|compute|resolve)",
+        => Regex.IsMatch(name, @"^(get|set|load|build|create|update|fetch|calculate|compute|resolve)",
             RegexOptions.IgnoreCase);
 
-    private static bool LooksBooleanish(string name) =>
-        Regex.IsMatch(name, @"^(is|has|should|can|allow|enable|disable)", RegexOptions.IgnoreCase);
+    private static bool LooksBooleanish(string name)
+        => Regex.IsMatch(name, @"^(is|has|should|can|allow|enable|disable)", RegexOptions.IgnoreCase);
 
     private static bool LooksPlural(string name) => name.EndsWith("s", StringComparison.OrdinalIgnoreCase);
 

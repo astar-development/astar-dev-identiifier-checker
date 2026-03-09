@@ -8,8 +8,8 @@ public class MarkdownReportGenerator
     {
         var sb = new StringBuilder();
 
-        sb.AppendLine("| Name | Type | Category | File | First Seen | Status | Notes |");
-        sb.AppendLine("|------|------|----------|------|------------|--------|--------|");
+        _ = sb.AppendLine("| Name | Type | Category | File | First Seen | Status | Notes |");
+        _ = sb.AppendLine("|------|------|----------|------|------------|--------|--------|");
 
         foreach(IdentifierRegistryEntry id in registry.Identifiers.OrderBy(i => i.Name))
         {
@@ -17,7 +17,7 @@ public class MarkdownReportGenerator
                 ? string.Join(", ", id.Similarity.Select(s => $"{s.Other} ({s.Score:F2})"))
                 : "";
 
-            sb.AppendLine(
+            _ = sb.AppendLine(
                 $"| {id.Name} | {id.Type} | {id.Category} | {id.File}:{id.Line} | {id.FirstDetected:yyyy-MM-dd} | {id.Status} | {notes} |");
         }
 

@@ -7,7 +7,7 @@ public class RegistryUpdater
         List<IdentifierRegistryEntry> existing = registry.Identifiers;
 
         // Remove missing
-        existing.RemoveAll(e =>
+        _ = existing.RemoveAll(e =>
             !scanned.Any(s => s.Name == e.Name && s.File == e.File && s.Line == e.Line));
 
         // Add or update

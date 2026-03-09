@@ -182,7 +182,9 @@ public class CSharpScanner
         {
             if(node.Pattern is DeclarationPatternSyntax dp &&
                dp.Designation is SingleVariableDesignationSyntax sv)
+            {
                 Add(sv.Identifier.Text, sv, IdentifierCategory.LocalVariable);
+            }
 
             base.VisitSwitchExpressionArm(node);
         }
@@ -310,8 +312,7 @@ public class CSharpScanner
         private void UpdateLifecycle(Identifier id, IdentifierUsage usage)
         {
             // First usage
-            if(id.FirstUsage == null)
-                id.FirstUsage = usage;
+            id.FirstUsage ??= usage;
 
             // Last usage
             id.LastUsage = usage;
@@ -319,8 +320,7 @@ public class CSharpScanner
             // Writes
             if(usage.UsageKind == "Write")
             {
-                if(id.FirstWrite == null)
-                    id.FirstWrite = usage;
+                id.FirstWrite ??= usage;
 
                 id.LastWrite = usage;
             }
@@ -332,33 +332,45 @@ public class CSharpScanner
             // Returned
             if(usage.ContainingMethod != null &&
                usage.ContainingMethod.Contains("return"))
+            {
                 id.IsReturned = true;
+            }
 
             // Captured by lambda
             if(usage.ContainingMethod != null &&
                usage.ContainingMethod.Contains("=>"))
+            {
                 id.IsCapturedByLambda = true;
+            }
 
             // Stored in field
             if(usage.UsageKind == "Write" &&
                usage.ContainingType != id.DeclaringType)
+            {
                 id.IsStoredInField = true;
+            }
 
             // Used in condition
             if(usage.UsageKind == "Read" &&
                usage.ContainingMethod?.Contains("if") == true)
+            {
                 id.IsUsedInCondition = true;
+            }
 
             // Used in loop
             if(usage.ContainingMethod?.Contains("for") == true ||
                usage.ContainingMethod?.Contains("foreach") == true ||
                usage.ContainingMethod?.Contains("while") == true)
+            {
                 id.IsUsedInLoop = true;
+            }
 
             // Disposed
             if(usage.UsageKind == "Invoke" &&
                usage.ContainingMethod?.Contains("Dispose") == true)
+            {
                 id.IsDisposed = true;
+            }
         }
 
         private string InferUsageKind(IdentifierNameSyntax node)

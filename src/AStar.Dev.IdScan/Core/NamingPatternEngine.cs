@@ -23,10 +23,7 @@ public static class NamingPatternEngine
 
         // Fallback: use the longest common substring
         var common = LongestCommonSubstring(names);
-        if(common.Length > 2)
-            return common + "{suffix}";
-
-        return null;
+        return common.Length > 2 ? common + "{suffix}" : null;
     }
 
     private static string LongestCommonSubstring(List<string> strings)

@@ -32,7 +32,7 @@ jobs:
         run: dotnet test --configuration Release --no-build --verbosity normal
 
       - name: Publish
-        run: dotnet publish AStar.Dev.IdScan/AStar.Dev.IdScan.csproj --configuration Release --output ./publish
+        run: dotnet publish ./src/AStar.Dev.IdScan/AStar.Dev.IdScan.csproj --configuration Release --output ./publish
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4

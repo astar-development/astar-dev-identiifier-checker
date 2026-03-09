@@ -8,33 +8,33 @@ public static class NamingHeatmapReportGenerator
     {
         var sb = new StringBuilder();
 
-        sb.AppendLine("# 🌡️ Naming Heatmap");
-        sb.AppendLine();
-        sb.AppendLine("This heatmap shows naming quality across files, classes, and namespaces.");
-        sb.AppendLine();
+        _ = sb.AppendLine("# 🌡️ Naming Heatmap");
+        _ = sb.AppendLine();
+        _ = sb.AppendLine("This heatmap shows naming quality across files, classes, and namespaces.");
+        _ = sb.AppendLine();
 
         var globalDebt = metrics.Sum(m => m.SeveritySum);
         var globalAvg = metrics.Average(m => m.Average);
 
-        sb.AppendLine("## 📊 Global Naming Health");
-        sb.AppendLine($"- **Total Naming Debt:** {globalDebt:F2}");
-        sb.AppendLine($"- **Average Naming Severity:** {globalAvg:F2}");
-        sb.AppendLine($"- **Overall Health:** {NamingHeatmapEngine.HeatLevel(globalAvg)}");
-        sb.AppendLine();
+        _ = sb.AppendLine("## 📊 Global Naming Health");
+        _ = sb.AppendLine($"- **Total Naming Debt:** {globalDebt:F2}");
+        _ = sb.AppendLine($"- **Average Naming Severity:** {globalAvg:F2}");
+        _ = sb.AppendLine($"- **Overall Health:** {NamingHeatmapEngine.HeatLevel(globalAvg)}");
+        _ = sb.AppendLine();
 
-        sb.AppendLine("## 🔥 File/Class Heatmap");
-        sb.AppendLine();
-        sb.AppendLine("| File | Class | Namespace | Avg Severity | Heat |");
-        sb.AppendLine("|------|--------|-----------|--------------|-------|");
+        _ = sb.AppendLine("## 🔥 File/Class Heatmap");
+        _ = sb.AppendLine();
+        _ = sb.AppendLine("| File | Class | Namespace | Avg Severity | Heat |");
+        _ = sb.AppendLine("|------|--------|-----------|--------------|-------|");
 
         foreach(NamingMetrics m in metrics.OrderByDescending(m => m.Average))
         {
-            sb.AppendLine(
+            _ = sb.AppendLine(
                 $"| `{m.File}` | `{m.Class}` | `{m.Namespace}` | {m.Average:F2} | {NamingHeatmapEngine.HeatLevel(m.Average)} |"
             );
         }
 
-        sb.AppendLine();
+        _ = sb.AppendLine();
         return sb.ToString();
     }
 }
