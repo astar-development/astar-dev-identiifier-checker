@@ -19,13 +19,13 @@ public static class NamingMetricsEngine
         foreach(NamingSeverityResult r in results)
         {
             Identifier? id = r.Identifier;
-            var key = $"{id.File}|{id.DeclaringNamespace}|{id.DeclaringType}";
+            var key = $"{id?.File ?? "Unknown"}|{id?.DeclaringNamespace ?? "Unknown"}|{id?.DeclaringType ?? "Unknown"}";
 
             if(!metrics.TryGetValue(key, out NamingMetrics? m))
             {
                 m = new NamingMetrics
                 {
-                    File = id.File,
+                    File = id?.File ?? "Unknown",
                     Namespace = id?.DeclaringNamespace ?? "Unknown",
                     Class = id?.DeclaringType ?? "Unknown"
                 };
