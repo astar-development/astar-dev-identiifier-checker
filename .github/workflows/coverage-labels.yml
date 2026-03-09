@@ -1,12 +1,13 @@
 
 name: Coverage PR Labels
+permissions:
+  pull-requests: write
+  contents: read
 
 on:
   pull_request:
     types: [opened, synchronize]
-
-permissions:
-  pull-requests: write
+  workflow_dispatch:
 
 jobs:
   label-coverage:
@@ -20,6 +21,9 @@ jobs:
         uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 10.x
+
+      - name: Restore
+        run: dotnet restore
 
       - name: Run PR Coverage
         run: |
