@@ -29,21 +29,12 @@ public static class NamingRecommendationEngine
         return id.Name + "_renamed";
     }
 
-    private static string Capitalize(string s)
-    {
-        return string.IsNullOrEmpty(s) ? s : char.ToUpper(s[0]) + s[1..];
-    }
+    private static string Capitalize(string s) => string.IsNullOrEmpty(s) ? s : char.ToUpper(s[0]) + s[1..];
 
     private static string ApplyPattern(string name, string pattern)
-    {
-        if(pattern == "{prefix}Id")
-            return name + "Id";
-
-        if(pattern == "is{Noun}")
-            return "is" + Capitalize(name);
-
-        return pattern == "{noun}s" ? name + "s" : name;
-    }
+        => pattern == "{prefix}Id"
+            ? name + "Id"
+            : pattern == "is{Noun}" ? "is" + Capitalize(name) : pattern == "{noun}s" ? name + "s" : name;
 
     private static string InferClusterName(IEnumerable<IdentifierSimilarity> similar, Identifier id)
     {

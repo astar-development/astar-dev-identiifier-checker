@@ -77,7 +77,5 @@ public static class LifecycleReportGenerator
     }
 
     private static string FormatUsage(IdentifierUsage? usage)
-    {
-        return usage == null ? "_none_" : $"`{usage.File}` line {usage.Line} ({usage.UsageKind})";
-    }
+        => usage == null ? "_none_" : $"`{usage.File}` line {usage.Line} ({usage.UsageKind})";
 }

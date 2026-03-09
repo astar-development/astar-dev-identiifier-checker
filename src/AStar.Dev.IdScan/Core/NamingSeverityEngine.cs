@@ -55,13 +55,7 @@ public static class NamingSeverityEngine
     }
 
     private static bool MatchesPattern(string name, string pattern)
-    {
-        if(pattern == "{prefix}Id")
-            return name.EndsWith("Id");
-
-        if(pattern == "is{Noun}")
-            return name.StartsWith("is") || name.StartsWith("has");
-
-        return pattern == "{noun}s" ? name.EndsWith("s") : false;
-    }
+        => pattern == "{prefix}Id"
+            ? name.EndsWith("Id")
+            : pattern == "is{Noun}" ? name.StartsWith("is") || name.StartsWith("has") : pattern == "{noun}s" && name.EndsWith("s");
 }
